@@ -12,10 +12,15 @@ chicago = 'chicago.csv'
 new_york = 'new_york_city.csv'
 washington = 'washington.csv'
 
-files_location = "C:\\Users\\nafeezq\\Desktop\\DA\\DAND\\bikeshare\\"
-
 month_list = ("January", "February", "March", "April", "May", "June")
 day_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+
+def get_files_location():
+    data_files_location = input("please enter the source data(bikeshare) files location")
+    return data_files_location
+
+files_location = get_files_location() + '\\'
 
 
 def get_city():
@@ -30,7 +35,7 @@ def get_city():
                  'Would you like to see data for Chicago(use input: chicago), New York(use input: new_york),'
                  ' or Washington(use input: washington)?\n')
 
-    return city
+    return city.lower()
     # TODO: handle raw input and complete function
 
 
@@ -132,23 +137,26 @@ def popular_month(city_file, time_period):
 
 def time_period_filtered_list(city_file, time_period):
     filtered_list = list()
-    city_data = list(open(files_location + globals()[city_file], "r"))
-    if time_period in month_list:
-        search_pattern = re.compile("^\d+-0" + str(month_list.index(time_period) + 1) + "-\d+")
-        for line in city_data[1:]:
-            if re.findall(search_pattern, line):
-                filtered_list.append(line)
-    elif time_period in day_list:
-        start_time_pattern = r"^\d+\-\d+\-\d+"
-        for line in city_data[1:]:
-            start_time = re.findall(start_time_pattern, line)
-            if day_list[datetime.datetime.strptime(start_time[0], "%Y-%m-%d").weekday()] == time_period:
-                filtered_list.append(line)
-    elif time_period == "none":
-        filtered_list = city_data[1:]
-    else:
-        print("time_period criteria not satisfied...")
+    try:
+        city_data = list(open(files_location + globals()[city_file], "r"))
 
+        if time_period in month_list:
+            search_pattern = re.compile("^\d+-0" + str(month_list.index(time_period) + 1) + "-\d+")
+            for line in city_data[1:]:
+                if re.findall(search_pattern, line):
+                    filtered_list.append(line)
+        elif time_period in day_list:
+            start_time_pattern = r"^\d+\-\d+\-\d+"
+            for line in city_data[1:]:
+                start_time = re.findall(start_time_pattern, line)
+                if day_list[datetime.datetime.strptime(start_time[0], "%Y-%m-%d").weekday()] == time_period:
+                    filtered_list.append(line)
+        elif time_period == "none":
+            filtered_list = city_data[1:]
+        else:
+            print("time_period criteria not satisfied...")
+    except IOError:
+        print("please check the file path")
     return filtered_list
 
 
@@ -453,6 +461,7 @@ def statistics():
     Returns:
         none.
     '''
+
     # Filter by city (Chicago, New York, Washington)
     city_file = get_city()
 
