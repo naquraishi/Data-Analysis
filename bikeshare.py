@@ -16,13 +16,6 @@ month_list = ("January", "February", "March", "April", "May", "June")
 day_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
-def get_files_location():
-    data_files_location = input("please enter the source data(bikeshare) files location")
-    return data_files_location
-
-files_location = get_files_location() + '\\'
-
-
 def get_city():
     '''Asks the user for a city and returns the filename for that city's bike share data.
 
@@ -54,8 +47,8 @@ def get_time_period():
                         '("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"), or not at'
                         ' all? Type "none" for no time filter.\n')
 
-    if (time_period == "none") or (time_period in month_list) or (time_period in day_list):
-        return time_period
+    if (time_period == "none") or (time_period.title() in month_list) or (time_period.title() in day_list):
+        return time_period.title()
     else:
         print("Please check the input!")
 
@@ -73,7 +66,7 @@ def get_month():
     if month.title() != "January" or "February" or "March" or "April" or "May" or "June":
         print("Pl check the month name")
     else:
-        return month
+        return month.title()
 
     # TODO: handle raw input and complete function
 
@@ -138,7 +131,7 @@ def popular_month(city_file, time_period):
 def time_period_filtered_list(city_file, time_period):
     filtered_list = list()
     try:
-        city_data = list(open(files_location + globals()[city_file], "r"))
+        city_data = list(open(globals()[city_file], "r"))
 
         if time_period in month_list:
             search_pattern = re.compile("^\d+-0" + str(month_list.index(time_period) + 1) + "-\d+")
@@ -434,7 +427,7 @@ def display_data():
     # TODO: handle raw input and complete function
 
     city_name = input("Which city data you would like to view? type chicago or new_york_city or washington")
-    city_data = list(open(files_location + globals()[city_name], "r"))
+    city_data = list(open(globals()[city_name], "r"))
 
     x = 1
     y = 6
